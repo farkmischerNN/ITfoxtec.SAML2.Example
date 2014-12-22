@@ -6,6 +6,7 @@ using ITfoxtec.Saml2.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.IdentityModel.Protocols.WSTrust;
 using System.ServiceModel;
 using System.Web.Mvc;
@@ -81,9 +82,26 @@ namespace WebAppTest.Controllers
 
             Saml2StatusCodes testcode = saml2AuthnResponse.Status;
 
+            string UserName = "";
+
+            foreach(Claim claim in saml2AuthnResponse.ClaimsIdentity.Claims)
+            {
+                //string test = claim.Value;
+                //test = claim.ValueType;
+                //test = claim.Type;
+                //       ClaimsIdentity test1 = claim.Subject;
+                //       Claim test2 = claim.Subject.FindFirst("Email");
+                if(claim.Type == "Email")
+                {
+                    UserName = claim.Value;
+                }
+            }
+
+            
+            
             bool testAuth = User.Identity.IsAuthenticated;
 
-            FormsAuthentication.SetAuthCookie(User.Identity.Name, true);
+            FormsAuthentication.SetAuthCookie(UserName, true);
 
             //if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             //{
